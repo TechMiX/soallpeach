@@ -10,7 +10,7 @@ int is_prime(uint64 n)
     if (n % 2 == 0) return 0;
 
     uint64 limit = (uint64)(sqrtl(n));
-    for (uint64 i=2; i<limit; i++) {
+    for (uint64 i=2; i<=limit; i++) {
         if (n % i == 0)
             return 0;
     }
@@ -20,8 +20,7 @@ int is_prime(uint64 n)
 int main(int argc, char *argv[]) {
     FILE* fp = fopen(argv[1], "r");
     uint64 i = 0;
-    while (!feof(fp)) {
-        fscanf(fp, "%llu", &i);
+    while (fscanf(fp, "%llu", &i) == 1) {
         printf("%d\n", is_prime(i));
     }
     fclose(fp);
