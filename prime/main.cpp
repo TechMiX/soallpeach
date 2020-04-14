@@ -1,49 +1,33 @@
-#include <iostream>
-#include <fstream>
-#include <openssl/bn.h>
-#include <string>
+#include <stdio.h>
+#include <cmath>
 
 using namespace std;
 
-bool FermatProbablePrimalityTest(string number)
+typedef unsigned long long uint64;
+
+bool FermatProbablePrimalityTest(uint64 n)
 {
-    if (number == "2")
+    if (n == uint64(2))
         return true;
-
-    BN_CTX *bnctx = BN_CTX_new();
-
-    BIGNUM *a = BN_new();
-    BN_dec2bn(&a, string("2").c_str());
-
-    BIGNUM *n = BN_new();
-    BN_dec2bn(&n, number.c_str());
-
-    BIGNUM *e = BN_new();
-    BN_sub(e, n, BN_value_one());
-
-    BIGNUM *r = BN_new();
-
-    BN_mod_exp(r, a, e, n, bnctx);
-
-    if (BN_cmp(r, BN_value_one()) == 0)
+    uint64 a = 2;
+    uint64 e = n - 1;
+    uint64 r;
+    r = uint64(pow(a, e)) % n;
+    if (r == 1)
         return true;
 
     return false;
 }
 
 int main(int argc, char *argv[]) {
-    ifstream f(argv[1]);
-    if (f.is_open())
+    FILE* fp = fopen(argv[1], "r");
+    uint64 i = 0;
+    while (!feof(fp))
     {
-        string line;
-        while ( getline(f, line) )
-        {
-            cout << FermatProbablePrimalityTest(line)? 1 : 0;
-            cout << endl;
-        }
-        f.close();
-    } else
-        cout << "Unable to open file"; 
+        fscanf(fp, "%d", &i);
+        printf("%d\n", FermatProbablePrimalityTest(i)? 1 : 0);
+    }
+    fclose(fp);
     return 0;
 }
 
