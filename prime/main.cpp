@@ -1,39 +1,48 @@
-#include <stdio.h>
-#include <math.h>
-#include <map>
+#include <iostream>
+#include <fstream>
+#include <openssl/bn.h>
+#include <string>
 
-typedef unsigned long long uint64;
-std::map<uint64, int> cache;
+using namespace std;
 
-int is_prime(uint64 n)
+bool FermatProbablePrimalityTest(string number)
 {
-    if (n <= 1) return 0;
-    else if (n <= 3) return 1;
-    else if (n % 2 == 0 || n % 3 == 0) return 0;
+    if (number == "2")
+        return true;
 
-    std::map<uint64,int>::iterator it = cache.find(n);
-    if (it != cache.end())
-        return it->second;
+    BN_CTX *bnctx = BN_CTX_new();
 
-    uint64 limit = (uint64)(sqrtl(n));
-    for (uint64 i=5; i<=limit; i+=6) {
-        if (n % i == 0 || n % (i+2) == 0) {
-            cache.insert(it, std::pair<uint64,int>(n, 0));
-            return 0;
-        }
-    }
-    cache.insert(it, std::pair<uint64,int>(n, 1));
-    return 1;
+    BIGNUM *a = BN_new();
+    BN_dec2bn(&a, string("2").c_str());
+
+    BIGNUM *n = BN_new();
+    BN_dec2bn(&n, number.c_str());
+
+    BIGNUM *e = BN_new();
+    BN_sub(e, n, BN_value_one());
+
+    BIGNUM *r = BN_new();
+
+    BN_mod_exp(r, a, e, n, bnctx);
+
+    if (BN_cmp(r, BN_value_one()) == 0)
+        return true;
+
+    return false;
 }
 
 int main(int argc, char *argv[]) {
-    FILE* fp = fopen(argv[1], "r");
-    uint64 i = 0;
-    while (fscanf(fp, "%llu", &i) == 1) {
-        fprintf(stdout, "%d\n", is_prime(i));
-    }
-    fclose(fp);
+    ifstream f(argv[1]);
+    if (f.is_open())
+    {
+        string line;
+        while ( getline(f, line) )
+        {
+            cout << FermatProbablePrimalityTest(line)? 1 : 0;
+            cout << endl;
+        }
+        f.close();
+    } else
+        cout << "Unable to open file"; 
     return 0;
 }
-
-
