@@ -7,6 +7,9 @@ using namespace std;
 
 int is_prime(string number)
 {
+    if (number == "2")
+	return 1;
+
     // Fermat Primality Test
 
     BN_CTX *bnctx = BN_CTX_new();
