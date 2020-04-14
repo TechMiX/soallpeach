@@ -1,49 +1,33 @@
-#include <iostream>
-#include <fstream>
-#include <openssl/bn.h>
+#include <stdio.h>
+#include <math.h>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
-BN_CTX *bnctx;
-BIGNUM *a;
-BIGNUM *n;
-BIGNUM *e;
-BIGNUM *r;
 
-string is_prime(string number)
+string is_prime(int n)
 {
-    if (number == "2")
-	return "1";
+    if (n <= 1) return "0";
+    else if (n <= 3) return "1";
+    else if (n % 2 == 0 || n % 3 == 0) return "0";
 
-    // Fermat Primality Test
-    BN_dec2bn(&n, number.c_str());
-    BN_sub(e, n, BN_value_one());
-    BN_mod_exp(r, a, e, n, bnctx);
-    if (BN_cmp(r, BN_value_one()) == 0)
-        return "1";
-
-    return "0";
+    int limit = (int)(sqrt(n));
+    for (int i=5; i<=limit; i+=6) {
+        if (n % i == 0 || n % (i+2) == 0)
+            return "0";
+    }
+    return "1";
 }
 
 int main(int argc, char *argv[]) {
-
-    ifstream f(argv[1]);
-    if (f.is_open()) {
-        string line, output;
-        bnctx = BN_CTX_new();
-        a = BN_new();
-        BN_dec2bn(&a, string("2").c_str());
-        n = BN_new();
-        e = BN_new();
-        r = BN_new();
-        while ( getline(f, line) ) {
-            output += is_prime(line) + "\n";
-        }
-        cout << output;
-        f.close();
-    } else
-        cout << "Unable to open file";
-
+    FILE* fp = fopen(argv[1], "r");
+    int i = 0;
+    string output;
+    while (fscanf(fp, "%d", &i) == 1) {
+        output += is_prime(i) + "\n";
+    }
+    cout << output;
+    fclose(fp);
     return 0;
 }
