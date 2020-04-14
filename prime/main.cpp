@@ -5,10 +5,9 @@
 
 using namespace std;
 
-bool FermatProbablePrimalityTest(string number)
+int is_prime(string number)
 {
-    if (number == "2")
-        return true;
+    // Fermat Primality Test
 
     BN_CTX *bnctx = BN_CTX_new();
 
@@ -26,23 +25,25 @@ bool FermatProbablePrimalityTest(string number)
     BN_mod_exp(r, a, e, n, bnctx);
 
     if (BN_cmp(r, BN_value_one()) == 0)
-        return true;
+        return 1;
 
-    return false;
+    return 0;
 }
 
 int main(int argc, char *argv[]) {
+
     ifstream f(argv[1]);
     if (f.is_open())
     {
         string line;
         while ( getline(f, line) )
         {
-            cout << FermatProbablePrimalityTest(line)? 1 : 0;
+            cout << is_prime(line);
             cout << endl;
         }
         f.close();
     } else
-        cout << "Unable to open file"; 
+        cout << "Unable to open file";
+
     return 0;
 }
