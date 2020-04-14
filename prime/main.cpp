@@ -33,11 +33,9 @@ int is_prime(string number)
 int main(int argc, char *argv[]) {
 
     ifstream f(argv[1]);
-    if (f.is_open())
-    {
+    if (f.is_open()) {
         string line;
-        while ( getline(f, line) )
-        {
+        while ( getline(f, line) ) {
             cout << is_prime(line);
             cout << endl;
         }
