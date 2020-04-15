@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <map>
+
+std::map<int, int> cache;
 
 int i;
 int n;
@@ -12,17 +15,24 @@ static int is_prime()
     else if (n <= 3) return 1;
     else if (n % 2 == 0 || n % 3 == 0) return 0;
 
+    std::map<int,int>::iterator it = cache.find(n);
+    if (it != cache.end())
+        return it->second;
+
     limit = (int)(sqrt(n));
     for (i=5; i<=limit; i+=6) {
-        if (n % i == 0 || n % (i+2) == 0)
+        if (n % i == 0 || n % (i+2) == 0) {
+            cache.insert(it, std::pair<int,int>(n, 0));
             return 0;
+        }
     }
+    cache.insert(it, std::pair<int,int>(n, 1));
     return 1;
 }
 
 int main(int argc, char *argv[]) {
     FILE* fp = fopen(argv[1], "r");
-    char* output = malloc(100000000*sizeof(char)); 
+    char* output = (char*)malloc(100000000*sizeof(char)); 
     char* output_start = output;
     while (fscanf(fp, "%d", &n) == 1) {
         output += sprintf(output, "%d\n", is_prime());
