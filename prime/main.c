@@ -1,20 +1,21 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define limit 100000
 
 int i, j, n, l, r, m;
 int primes_count;
-int numbers[limit];
+bool numbers[limit];
 int primes[limit];
 
 static void sieve() {
-    numbers[0] = 1; numbers[1] = 1;
+    numbers[0] = true; numbers[1] = true;
     for (i=0, primes_count=0; i<limit; i++) {
-	if (numbers[i] == 1) continue;
+	if (numbers[i] == true) continue;
         primes[primes_count++] = i;
-        for (j=2; i*j<limit; j++) numbers[i*j] = 1;
+        for (j=2; i*j<limit; j++) numbers[i*j] = true;
     }
 }
 
