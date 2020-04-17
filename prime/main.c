@@ -1,11 +1,10 @@
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
 #define limit 100000
 
-int i, j, n, l, r, m;
+int i, j, n;
 int primes_count;
 bool numbers[limit];
 int primes[limit];
@@ -20,11 +19,13 @@ static void sieve() {
 }
 
 static int is_n_prime() {
-    if (n<limit && !numbers[n]) return 1;
+    if (n<limit) {
+        if (!numbers[n]) return 1;
+        return 0;
+    }
 
     // if n is bigger than our limit, check primality of n
-    j = (int)(sqrt(n));
-    for (i=2; i<primes_count; i++)
+    for (i=0; i<primes_count; i++)
         if (n % primes[i] == 0)
             return 0;
     return 1;
@@ -33,7 +34,17 @@ static int is_n_prime() {
 int main(int argc, char *argv[]) {
     sieve();
     FILE* fp = fopen(argv[1], "r");
-    while (fscanf(fp, "%d", &n) == 1)
-        fprintf(stdout, "%d\n", is_n_prime());
+    fseek(fp, 0, SEEK_END);
+    long fsize = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    char *fcontent = malloc(fsize + 1);
+    i = fread(fcontent, 1, fsize, fp);
+
+    char* output = (char*)malloc(100000000*sizeof(char)); 
+    char* output_start = output;
+    FILE* fpm = fmemopen(fcontent, fsize, "r");
+    while (fscanf(fpm, "%d", &n) > 0)
+        output += sprintf(output, "%d\n", is_n_prime());
+    fprintf(stdout, "%s", output_start);
     return 0;
 }
