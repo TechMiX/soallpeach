@@ -1,4 +1,4 @@
-FROM gcc:4.9
+FROM gcc:latest
 COPY . /usr/src/primality
 WORKDIR /usr/src/primality
 ENTRYPOINT ["./primality"]
