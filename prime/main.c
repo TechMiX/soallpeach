@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #define limit 100000
 
@@ -19,12 +21,10 @@ int main(int argc, char *argv[]) {
     }
 
     // open and read the whole file at once
-    FILE* fp = fopen(argv[1], "r");
-    fseek(fp, 0, SEEK_END);
-    long fsize = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
+    int fid = open(argv[1], 0);
+    int fsize = 7000000;
     char *fcontent = malloc(fsize + 1);
-    i = fread(fcontent, 1, fsize, fp);
+    i = read(fid, fcontent, fsize);
 
     char* output = malloc(3000000*sizeof(char)); 
     char* output_start = output;
