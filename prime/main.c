@@ -20,17 +20,9 @@ static void sieve() {
 }
 
 static int is_n_prime() {
-    // binary search in primes
-    l = 0; r = primes_count - 1;
-    while (l <= r) {
-        m = l + (r - l) / 2;
-        if (primes[m] == n) return 1;
-        if (primes[m] < n) l = m + 1;
-        else r = m - 1;
-    }
+    if (n<limit && !numbers[n]) return 1;
 
     // if n is bigger than our limit, check primality of n
-    if (n < limit) return 0;
     j = (int)(sqrt(n));
     for (i=2; i<primes_count; i++)
         if (n % primes[i] == 0)
