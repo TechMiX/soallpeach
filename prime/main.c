@@ -5,7 +5,7 @@
 #define limit 100000
 #define wlimit 316 // sqrt(limit)
 
-int i, j, n;
+int n;
 unsigned char numbers[limit];
 
 static int is_n_prime() {
@@ -13,8 +13,8 @@ static int is_n_prime() {
         return numbers[n];
 
     // if n is bigger than our limit, check primality of n
-    j = (int) sqrt(n) + 1;
-    for (i=5; i<j; i+=6)
+    int j = (int) sqrt(n) + 1;
+    for (int i=5; i<j; i+=6)
         if (n % i == 0 || n % (i+2) == 0)
             return 0;
     return 1;
@@ -47,7 +47,9 @@ int main(int argc, char *argv[]) {
     numbers[2] = numbers[3] = numbers[5] = 1;
 
     FILE* fp = fopen(argv[1], "r");
-    while (fscanf(fp, "%d", &n) > 0) {
+    char buf[limit];
+    while (fgets(buf, limit, fp) != NULL) {
+        n = atoi(buf);
         putchar_unlocked(is_n_prime() ? '1' : '0');
         putchar_unlocked('\n');
     }
