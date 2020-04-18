@@ -24,42 +24,34 @@ static int is_n_prime() {
 int main(int argc, char *argv[]) {
 
     // sieve of atkin
-    int k, x, y, z, g, h;
+    int x, y, z;
     for (x=1; x<=wlimit; x++)
         for (y=1; y<=wlimit; y++) {
-            g = x*x;
-            h = y*y;
-            z = 4*g+h;
+            z = 4*x*x + y*y;
             if (z <= limit && (
                 z % 60 == 1 || z % 60 == 13 || z % 60 == 17 || z % 60 == 29 ||
                 z % 60 == 37 || z % 60 == 41 || z % 60 == 49 || z % 60 == 53)
                )
                 numbers[z] = !numbers[z];
-            z -= g;
+            z = 3*x*x + y*y;
             if (z <= limit && (
                 z % 60 == 7 || z % 60 == 19 || z % 60 == 31 || z % 60 == 43)
                )
                 numbers[z] = !numbers[z];
-            z -= 2*h;
+            z = 3*x*x - y*y;
             if (x > y && z <= limit && (
                 z % 60 == 11 || z % 60 == 23 || z % 60 == 47 || z % 60 == 59)
                )
                 numbers[z] = !numbers[z];
         }
-
-    for (i=5; i<=wlimit; i++)
-        if (numbers[i] == 1)
-            for (j=1; j*i*i<=limit; j++)
-                numbers[j*i*i] = 0;
-
-    numbers[0] = 0; numbers[1] = 0; numbers[2] = 1; numbers[3] = 1; numbers[4] = 0; numbers[5] = 1;
+    numbers[1] = numbers[4] = 0;
+    numbers[2] = numbers[3] = numbers[5] = 1;
 
     FILE* fp = fopen(argv[1], "r");
-    char* output = (char*)malloc(100000000*sizeof(char)); 
-    char* output_start = output;
-    while (fscanf(fp, "%d", &n) > 0)
-        output += sprintf(output, "%d\n", is_n_prime());
-    fprintf(stdout, "%s", output_start);
+    while (fscanf(fp, "%d", &n) > 0) {
+        putchar_unlocked(is_n_prime() ? '1' : '0');
+        putchar_unlocked('\n');
+    }
     fclose(fp);
 
     return 0;
