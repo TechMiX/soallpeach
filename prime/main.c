@@ -55,8 +55,11 @@ int main(int argc, char *argv[]) {
     numbers[0] = 0; numbers[1] = 0; numbers[2] = 1; numbers[3] = 1; numbers[4] = 0; numbers[5] = 1;
 
     FILE* fp = fopen(argv[1], "r");
+    char* output = (char*)malloc(100000000*sizeof(char)); 
+    char* output_start = output;
     while (fscanf(fp, "%d", &n) > 0)
-        fprintf(stdout, "%d\n", is_n_prime());
+        output += sprintf(output, "%d\n", is_n_prime());
+    fprintf(stdout, "%s", output_start);
     fclose(fp);
 
     return 0;
