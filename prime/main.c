@@ -5,9 +5,8 @@
 #define limit 100000
 #define wlimit 316 // sqrt(limit)
 
-int i, j, n, primes_count;
+int i, j, n;
 unsigned char numbers[limit];
-int primes[limit];
 
 static int is_n_prime() {
     if (n<limit)
