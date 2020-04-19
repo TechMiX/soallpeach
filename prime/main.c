@@ -49,16 +49,22 @@ int main(int argc, char *argv[]) {
     FILE* fp = fopen(argv[1], "r");
     char data[wlimit];
     char* buf = data;
-    while ((i = getc_unlocked(fp)) != EOF) {
-        *buf++ = i;
-        if (i != '\n')
+    do {
+        i = getc_unlocked(fp);
+        if (i == EOF) {
+            *buf = '\0';
+            if (data == buf)
+                break;
+        } else if (i > '\n') {
+            *buf++ = i;
             continue;
-        *buf = '\0';
+        } else
+            *buf = '\0';
         n = atoi(data);
         putchar_unlocked(is_n_prime() ? '1' : '0');
         putchar_unlocked('\n');
         buf = data;
-    }
+    } while (i != EOF);
     fclose(fp);
 
     return 0;
