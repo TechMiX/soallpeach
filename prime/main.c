@@ -47,9 +47,15 @@ int main(int argc, char *argv[]) {
     numbers[2] = numbers[3] = numbers[5] = 1;
 
     FILE* fp = fopen(argv[1], "r");
-    char buf[limit];
-    while (fgets(buf, limit, fp) != NULL) {
-        n = atoi(buf);
+    int c;
+    while ((c = getc_unlocked(fp)) != EOF) {
+        char data[wlimit];
+        char *buf = data;
+        do {
+          *buf++ = c;
+        } while ((c = getc_unlocked(fp)) != '\n');
+        *buf = '\0';
+        n = atoi(data);
         putchar_unlocked(is_n_prime() ? '1' : '0');
         putchar_unlocked('\n');
     }
