@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
           *buf++ = i;
           i = getc_unlocked(fp);
         } while (i > 10);
-        if (i == EOF) break;
+        if (i == EOF) { putchar_unlocked('\n'); break; }
         *buf = '\0';
         n = atoi(data);
         putchar_unlocked(is_n_prime() ? '1' : '0');
