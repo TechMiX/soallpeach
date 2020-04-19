@@ -49,32 +49,21 @@ int main(int argc, char *argv[]) {
 
     FILE* fp = fopen(argv[1], "r");
     char data[wlimit];
-    char* buf = data;
-    char* buf2 = data;
+    int c;
     do {
-        // fgets
-        i = getc_unlocked(fp);
-        if (i == EOF) {
-            *buf = '\0';
-            if (data == buf)
-                break;
-        } else if (i > '\n') {
-            *buf++ = i;
+        // fgets and atoi
+        c = getc_unlocked(fp);
+        if (c > '\n') {
+            n = n*10 + (c - '0');
             continue;
-        } else
-            *buf = '\0';
-
-        // atoi
-        buf2 = data;
-        n = 0;
-        while( *buf2 )
-            n = n*10 + (*buf2++ - '0');
+        } else if (c == EOF && n == 0)
+            break;
 
         putchar_unlocked(is_n_prime() + '0');
         putchar_unlocked('\n');
 
-        buf = data;
-    } while (i != EOF);
+        n = 0;
+    } while (c != EOF);
 
     return 0;
 }
