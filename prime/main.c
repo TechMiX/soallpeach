@@ -17,6 +17,7 @@ static int is_n_prime() {
     for (i=5; i<j; i+=6)
         if (n % i == 0 || n % (i+2) == 0)
             return 0;
+
     return 1;
 }
 
@@ -49,7 +50,9 @@ int main(int argc, char *argv[]) {
     FILE* fp = fopen(argv[1], "r");
     char data[wlimit];
     char* buf = data;
+    char* buf2 = data;
     do {
+        // fgets
         i = getc_unlocked(fp);
         if (i == EOF) {
             *buf = '\0';
@@ -60,12 +63,18 @@ int main(int argc, char *argv[]) {
             continue;
         } else
             *buf = '\0';
-        n = atoi(data);
-        putchar_unlocked(is_n_prime() ? '1' : '0');
+
+        // atoi
+        buf2 = data;
+        n = 0;
+        while( *buf2 )
+            n = n*10 + (*buf2++ - '0');
+
+        putchar_unlocked(is_n_prime() + '0');
         putchar_unlocked('\n');
+
         buf = data;
     } while (i != EOF);
-    fclose(fp);
 
     return 0;
 }
