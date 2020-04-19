@@ -53,7 +53,8 @@ int main(int argc, char *argv[]) {
         do {
           *buf++ = i;
           i = getc_unlocked(fp);
-        } while (i != '\n' && i != EOF);
+        } while (i > 10);
+        if (i == EOF) break;
         *buf = '\0';
         n = atoi(data);
         putchar_unlocked(is_n_prime() ? '1' : '0');
