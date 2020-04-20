@@ -34,12 +34,12 @@ int main(int argc, char *argv[]) {
     numbers[2] = numbers[3] = numbers[5] = 1;
 
     FILE* fp = fopen(argv[1], "r");
-    int c, n;
+    int c, n = 0;
     do {
         // fgets and atoi
         c = getc_unlocked(fp);
         if (c > '\n') {
-            n = n*10 + (c - '0');
+            n = (n << 1) + (n << 3) + c - '0';
             continue;
         } else if (c == EOF && n == 0)
             break;
