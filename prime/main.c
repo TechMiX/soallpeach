@@ -34,7 +34,6 @@ int main(int argc, char *argv[]) {
     numbers[2] = numbers[3] = numbers[5] = 1;
 
     FILE* fp = fopen(argv[1], "r");
-    char data[wlimit];
     int c, n;
     do {
         // fgets and atoi
