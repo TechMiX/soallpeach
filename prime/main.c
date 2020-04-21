@@ -1,48 +1,60 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #define limit 100000
-#define wlimit 316 // sqrt(limit)
+#define wlimit 317 // sqrt(limit)
 
 unsigned char numbers[limit];
 
 int main(int argc, char *argv[]) {
 
     // sieve of atkin
-    int x, y, z;
-    for (x=1; x<=wlimit; x++)
-        for (y=1; y<=wlimit; y++) {
-            z = 4*x*x + y*y;
-            if (z <= limit && (
-                z % 60 == 1 || z % 60 == 13 || z % 60 == 17 || z % 60 == 29 ||
-                z % 60 == 37 || z % 60 == 41 || z % 60 == 49 || z % 60 == 53)
-               )
-                numbers[z] = !numbers[z];
-            z = 3*x*x + y*y;
-            if (z <= limit && (
-                z % 60 == 7 || z % 60 == 19 || z % 60 == 31 || z % 60 == 43)
-               )
-                numbers[z] = !numbers[z];
-            z = 3*x*x - y*y;
-            if (x > y && z <= limit && (
-                z % 60 == 11 || z % 60 == 23 || z % 60 == 47 || z % 60 == 59)
-               )
-                numbers[z] = !numbers[z];
+    int x, y, z, h, g, j;
+    for (x=1; x<wlimit; x++)
+        for (y=1; y<wlimit; y++) {
+            h = x*x;
+            g = y*y;
+            z = (h << 2) + g;
+            if (z < limit) {
+                j = z % 60;
+                if (j == 1 || j == 13 || j == 17 || j == 29 ||
+                    j == 37 || j == 41 || j == 49 || j == 53)
+                    numbers[z] = !numbers[z];
+            }
+            z = z - h;
+            if (z < limit) {
+                j = z % 60;
+                if (j == 7 || j == 19 || j == 31 || j == 43)
+                    numbers[z] = !numbers[z];
+            }
+            z = z - (g << 1);
+            if (x > y && z < limit) {
+                j = z % 60;
+                if (j == 11 || j == 23 || j == 47 || j == 59)
+                    numbers[z] = !numbers[z];
+            }
         }
     numbers[1] = numbers[4] = 0;
     numbers[2] = numbers[3] = numbers[5] = 1;
 
-    FILE* fp = fopen(argv[1], "r");
-    int c, n = 0;
+    int n = 0;
+    int fid = open(argv[1], O_NDELAY);
+    int fsize = 7000000;
+    char* fcontent = malloc(fsize + 1);
+    x = read(fid, fcontent, fsize);
+
     do {
         // fgets and atoi
-        c = getc_unlocked(fp);
-        if (c > '\n') {
-            n = (n << 1) + (n << 3) + c - '0';
+        if (*fcontent > '\n') {
+            n = (n << 1) + (n << 3) + *fcontent - '0';
+            fcontent++;
             continue;
-        } else if (c == EOF && n == 0)
+        } else if (*fcontent == 0 && n == 0)
             break;
+        fcontent++;
 
         // check primality of n
         if (n<limit)
@@ -60,7 +72,7 @@ int main(int argc, char *argv[]) {
         putchar_unlocked('\n');
 
         n = 0;
-    } while (c != EOF);
+    } while (1);
 
     return 0;
 }
