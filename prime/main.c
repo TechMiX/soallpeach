@@ -3,6 +3,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/mman.h>
 
 #define limit 100000
 #define wlimit 317 // sqrt(limit)
@@ -41,10 +42,11 @@ int main(int argc, char *argv[]) {
     numbers[2] = numbers[3] = numbers[5] = 1;
 
     int n = 0;
-    int fid = open(argv[1], O_RDONLY);
-    int fsize = 7000000;
-    char* fcontent = malloc(fsize + 1);
-    x = read(fid, fcontent, fsize);
+    int fid = open(argv[1], O_RDONLY | O_DIRECT);
+    size_t fsize = 100*32 * (512 + 1) * 4;
+    char* fcontent = mmap(NULL, fsize, PROT_READ,
+                          MAP_FILE | MAP_PRIVATE | MAP_POPULATE,
+                          fid, 0);
 
     do {
         // fgets and atoi
