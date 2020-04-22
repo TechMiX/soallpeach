@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     numbers[2] = numbers[3] = numbers[5] = 1;
 
     int n = 0;
-    int fid = open(argv[1], O_NDELAY);
+    int fid = open(argv[1], O_RDONLY);
     int fsize = 7000000;
     char* fcontent = malloc(fsize + 1);
     x = read(fid, fcontent, fsize);
@@ -49,12 +49,10 @@ int main(int argc, char *argv[]) {
     do {
         // fgets and atoi
         if (*fcontent > '\n') {
-            n = (n << 1) + (n << 3) + *fcontent - '0';
-            fcontent++;
+            n = (n << 1) + (n << 3) + *fcontent++ - '0';
             continue;
-        } else if (*fcontent == 0 && n == 0)
+        } else if (*fcontent++ == 0 && n == 0)
             break;
-        fcontent++;
 
         // check primality of n
         if (n<limit)
