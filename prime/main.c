@@ -14,10 +14,8 @@ int main(int argc, char *argv[]) {
 
     /*
        -- Sieve of Atkin --
-       The fastet algorithm to find all the prime numbers
-       up to a specific number (as far as we know, April 2020)
-       In comparison to the ancient Sieve of Eratosthenes,
-       it has far less computational complexity.
+       A fast algorithm to find all the prime numbers
+       up to a specific number.
     */
     int x, y, z, h, g, j;
     for (x=1; x<wlimit; x++)
