@@ -12,7 +12,13 @@ unsigned char numbers[limit];
 
 int main(int argc, char *argv[]) {
 
-    // sieve of atkin
+    /*
+       -- Sieve of Atkin --
+       The fastet algorithm to find all the prime numbers
+       up to a specific number (as far as we know, April 2020)
+       In comparison to the ancient Sieve of Eratosthenes,
+       it has far less computational complexity.
+    */
     int x, y, z, h, g, j;
     for (x=1; x<wlimit; x++)
         for (y=1; y<wlimit; y++) {
@@ -38,6 +44,14 @@ int main(int argc, char *argv[]) {
                     numbers[z] = !numbers[z];
             }
         }
+
+    for (x=7; x<wlimit; x++)
+        if (numbers[x] == 1) {
+            z = x*x;
+            for (y=1; y*z<limit; y++)
+                numbers[y*z] = 0;
+        }
+
     numbers[1] = numbers[4] = 0;
     numbers[2] = numbers[3] = numbers[5] = 1;
 
