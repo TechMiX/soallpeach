@@ -35,7 +35,7 @@ func SumRoute(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	number, _ := strconv.Atoi(string(body))
+	number, _ := strconv.Atoi(string(body[:len(body)-1]))
 
 	mutex.Lock()
 	sum += int64(number)
