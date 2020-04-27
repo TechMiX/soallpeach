@@ -25,7 +25,7 @@ func main() {
 
 func IncreaseRoute(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
-	number, _ := strconv.Atoi(string(body[:len(body)-1]))
+	number, _ := strconv.Atoi(string(body))
 
 	mutex.Lock()
 	sum += int64(number)
