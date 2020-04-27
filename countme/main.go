@@ -30,8 +30,6 @@ func IncreaseRoute(w http.ResponseWriter, r *http.Request) {
 	mutex.Lock()
 	sum += int64(number)
 	mutex.Unlock()
-
-	w.Write([]byte(strconv.FormatInt(sum, 10)))
 }
 
 func CountRoute(w http.ResponseWriter, r *http.Request) {
