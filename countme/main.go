@@ -5,9 +5,12 @@ import (
 	"net"
 	"net/http"
 	"strconv"
+
+	"github.com/sasha-s/go-deadlock"
 )
 
 var sum int64
+var mutex deadlock.Mutex
 
 func main() {
 
@@ -24,11 +27,15 @@ func IncreaseRoute(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	number, _ := strconv.Atoi(string(body[:len(body)-1]))
 
+	mutex.Lock()
 	sum += int64(number)
+	mutex.Unlock()
 
 	w.Write([]byte(strconv.FormatInt(sum, 10)))
 }
 
 func CountRoute(w http.ResponseWriter, r *http.Request) {
+	mutex.Lock()
 	w.Write([]byte(strconv.FormatInt(sum, 10)))
+	mutex.Unlock()
 }
