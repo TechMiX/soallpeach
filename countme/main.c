@@ -15,7 +15,7 @@ int main(){
     serv_input_addr.sin_port = htons(80);
 
     bind(s, (struct sockaddr*)&serv_input_addr, sizeof(serv_input_addr));
-    listen(s, 100000);
+    listen(s, 1000000);
 
     int cs, r, n, sum = 0;
     int client_length = sizeof(serv_input_addr);
@@ -29,7 +29,7 @@ int main(){
         cs = accept(s, (struct sockaddr*) &serv_input_addr, &client_length);
         r = read(cs, buf, 1023);
 
-        // -> ENDPINT /count
+        // -> ENDPOINT /count
 
         if (buf[5] == 'c') {
             r = snprintf(sum_string, 128, "%d", sum);
@@ -49,7 +49,7 @@ int main(){
                 continue;
         while (*++bufp != '\r');
 
-        // fgets and atoi body
+        // atoi body
         n = 0;
         while (1)
             if (*bufp > '\r') {
