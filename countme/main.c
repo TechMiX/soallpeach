@@ -7,15 +7,18 @@
 #include <signal.h>
 #include <stdlib.h>
 
+int s;
+
 void SIGINT_handler(int sig) {
-     exit(0);
+    close(s);
+    exit(0);
 }
 
 int main() {
 
     signal(SIGINT, SIGINT_handler);
 
-    int s = socket(AF_INET, SOCK_STREAM, 0);
+    s = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in serv_input_addr;
 
     serv_input_addr.sin_family = AF_INET;
@@ -25,17 +28,26 @@ int main() {
     bind(s, (struct sockaddr*)&serv_input_addr, sizeof(serv_input_addr));
     listen(s, 1000000);
 
-    int cs, r, n, sum = 0;
+    int cs, r, n, i, sum = 0;
     int client_length = sizeof(serv_input_addr);
     char buf[1024], sum_string[128];
     char* bufp = buf;
 
     memset(&sum_string, 0, sizeof(sum_string));
 
-    while(1) {
+    while (1) {
         memset(&buf, 0, sizeof(buf));
         cs = accept(s, (struct sockaddr*) &serv_input_addr, &client_length);
-        r = read(cs, buf, 1023);
+
+        i = 0;
+        do
+            r = read(cs, buf, 1023);
+        while (r < 1 && ++i < 100);
+
+        if (buf[0] == 0) {
+            close(cs);
+            continue;
+        }
 
         // -> ENDPOINT /count
 
@@ -68,8 +80,6 @@ int main() {
 
         sum += n;
    }
-
-   close(s);
 
    return 0;
 }
