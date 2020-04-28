@@ -16,33 +16,36 @@ void SIGINT_handler(int sig) {
 
 int main() {
 
+    int cs, cl, r, n, i, sum = 0;
+    char buf[1024], sum_string[128];
+    char* bufp = buf;
+    struct sockaddr_in srv;
+
     signal(SIGINT, SIGINT_handler);
 
     s = socket(AF_INET, SOCK_STREAM, 0);
-    struct sockaddr_in serv_input_addr;
 
-    serv_input_addr.sin_family = AF_INET;
-    serv_input_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_input_addr.sin_port = htons(80);
+    srv.sin_family = AF_INET;
+    srv.sin_addr.s_addr = htonl(INADDR_ANY);
+    srv.sin_port = htons(80);
+    cl = sizeof(srv);
 
-    bind(s, (struct sockaddr*)&serv_input_addr, sizeof(serv_input_addr));
+    bind(s, (struct sockaddr*) &srv, cl);
     listen(s, 1000000);
-
-    int cs, r, n, i, sum = 0;
-    int client_length = sizeof(serv_input_addr);
-    char buf[1024], sum_string[128];
-    char* bufp = buf;
 
     memset(&sum_string, 0, sizeof(sum_string));
 
     while (1) {
+
         memset(&buf, 0, sizeof(buf));
-        cs = accept(s, (struct sockaddr*) &serv_input_addr, &client_length);
+        do
+            cs = accept(s, (struct sockaddr*) &srv, &cl);
+        while (cs < 1);
 
         i = 0;
         do
             r = read(cs, buf, 1023);
-        while (r < 1 && ++i < 100);
+        while (r < 1 && ++i < 1000);
 
         if (buf[0] == 0) {
             close(cs);
