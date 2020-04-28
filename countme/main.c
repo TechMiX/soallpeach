@@ -4,8 +4,16 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/types.h>
+#include <signal.h>
+#include <stdlib.h>
 
-int main(){
+void SIGINT_handler(int sig) {
+     exit(0);
+}
+
+int main() {
+
+    signal(SIGINT, SIGINT_handler);
 
     int s = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in serv_input_addr;
