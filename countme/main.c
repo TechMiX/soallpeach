@@ -17,7 +17,7 @@ void SIGINT_handler(int sig) {
 int main() {
 
     int cs, cl, r, n, i, sum = 0;
-    char buf[1024], sum_string[128];
+    char buf[1024], sum_string[128], http_200_ok[] = "HTTP/1.1 200 OK\r\n\r\n";
     char* bufp = buf;
     struct sockaddr_in srv;
 
@@ -63,6 +63,7 @@ int main() {
 
         // -> ENDPOINT /
 
+        r = write(cs, http_200_ok, 20);
         close(cs);
 
         // seek buffer to the start of body
