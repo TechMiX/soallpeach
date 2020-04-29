@@ -1,12 +1,10 @@
 package main
 
 import (
-	"io/ioutil"
-	"net"
-	"net/http"
 	"strconv"
 
 	"github.com/sasha-s/go-deadlock"
+	"github.com/valyala/fasthttp"
 )
 
 var sum int64
@@ -14,26 +12,31 @@ var mutex deadlock.Mutex
 
 func main() {
 
-	listener, _ := net.Listen("tcp", "0.0.0.0:80")
+	m := func(ctx *fasthttp.RequestCtx) {
+		switch string(ctx.Path()) {
+		case "/":
+			IncreaseRoute(ctx)
+		case "/count":
+			CountRoute(ctx)
+		default:
+			ctx.Error("not found", fasthttp.StatusNotFound)
+		}
+	}
 
-	serverMux := http.NewServeMux()
-	serverMux.HandleFunc("/", IncreaseRoute)
-	serverMux.HandleFunc("/count", CountRoute)
-
-	http.Serve(listener, serverMux)
+	fasthttp.ListenAndServe(":80", m)
 }
 
-func IncreaseRoute(w http.ResponseWriter, r *http.Request) {
-	body, _ := ioutil.ReadAll(r.Body)
-	number, _ := strconv.Atoi(string(body))
+func IncreaseRoute(ctx *fasthttp.RequestCtx) {
+
+	number, _ := strconv.Atoi(string(ctx.PostBody()))
 
 	mutex.Lock()
 	sum += int64(number)
 	mutex.Unlock()
 }
 
-func CountRoute(w http.ResponseWriter, r *http.Request) {
+func CountRoute(ctx *fasthttp.RequestCtx) {
 	mutex.Lock()
-	w.Write([]byte(strconv.FormatInt(sum, 10)))
+	ctx.Write([]byte(strconv.FormatInt(sum, 10)))
 	mutex.Unlock()
 }
